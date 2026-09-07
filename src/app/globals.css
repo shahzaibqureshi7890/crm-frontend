@@ -1,26 +1,45 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f1f1f3;
+  --foreground: #151816;
+  --color-primary: #115258;
+  --color-primary-dark: #0d4146;
+  --color-primary-light: #e5eeee;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f1f1f3;
+  --color-surface-soft: #f7f7f8;
+  --color-border: #dfe2e2;
+  --color-border-strong: #b7c6c7;
+  --color-muted: #5f5f5f;
+  --color-muted-light: #827b68;
+  --color-success: #115258;
+  --color-warning: #827b68;
+  --color-danger: #9b5555;
+  --color-warm: #4c3c2e;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-mono: monospace;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+@keyframes app-toast-progress {
+  from {
+    width: 0%;
+  }
+
+  to {
+    width: 100%;
+  }
 }
