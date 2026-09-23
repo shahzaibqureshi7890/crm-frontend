@@ -1,28 +1,21 @@
 "use client";
-
 import { useState } from "react";
 import { Menu } from "lucide-react";
 import Sidebar from "./Sidebar";
 import MobileSidebar from "./MobileSidebar";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useDashboardCounts } from "@/hooks/use-dashboard-counts";
-
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
-
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
-
   const { user } = useCurrentUser();
-
   const { counts } = useDashboardCounts();
-
   return (
-    <div className="flex min-h-screen bg-[var(--background)]">
+    <div className="flex h-screen min-h-0 bg-[var(--background)]">
       <Sidebar user={user} counts={counts} />
-
-      <div className="min-w-0 flex-1">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-30 flex h-[60px] items-center border-b border-[var(--color-border)] bg-[var(--color-surface)] px-4 lg:hidden">
           <button
             type="button"
@@ -33,21 +26,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           >
             <Menu size={20} strokeWidth={2} />
           </button>
-
           <div className="ml-3 flex items-center gap-2.5">
             <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[var(--color-primary)] text-xs font-bold text-white">
               »
             </div>
-
             <span className="text-sm font-bold tracking-tight text-[var(--foreground)]">
               Convoy
             </span>
           </div>
         </header>
-
-        <main className="min-w-0">{children}</main>
+        <main className="min-h-0 min-w-0 flex-1">{children}</main>
       </div>
-
       <MobileSidebar
         isOpen={isMobileSidebarOpen}
         onClose={() => setIsMobileSidebarOpen(false)}

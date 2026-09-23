@@ -9,3 +9,15 @@ export interface ProfileResponse {
   message: string;
   user: CurrentUser;
 }
+
+export type User = {
+  id: number;
+  name: string;
+  email: string;
+};
+
+export type UsersResponse = {
+  success: boolean;
+  message: string;
+  users: User[];
+};
