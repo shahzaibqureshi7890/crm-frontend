@@ -27,6 +27,10 @@ const nextConfig: NextConfig = {
         source: "/api/:path*",
         destination: "https://crm-backend-roan.vercel.app/api/:path*",
       },
+      {
+        source: "/uploads/:path*",
+        destination: "https://crm-backend-roan.vercel.app/uploads/:path*", // <-- Yeh line lazmi add karein taake images proxy ho saken
+      },
     ];
   },
 };
