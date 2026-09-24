@@ -1,46 +1,38 @@
 "use client";
-
 import { FormEvent, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-
 import { loginUser } from "@/services/auth.service";
 import { showAppToast } from "@/components/ui/app-toast";
 import { useAuth } from "@/context/AuthContext";
-
 export default function LoginPage() {
   const router = useRouter();
   const { refreshUser } = useAuth();
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
+    setIsLoading((main) => true);
     setIsLoading(true);
-
     try {
       const response = await loginUser(email, password);
-
-      await refreshUser();
-
       showAppToast("success", response.message);
-
+      // Pehle foran dashboard par redirect karein
       router.push("/dashboard");
+      router.refresh();
+      // Background mein user context refresh hota rahega
+      refreshUser().catch(() => {});
     } catch (error) {
       const message =
         error instanceof Error
           ? error.message
           : "Login failed. Please try again.";
-
       showAppToast("error", message);
     } finally {
       setIsLoading(false);
     }
   };
-
   return (
     <div className="flex min-h-[calc(100vh-68px)] items-center justify-center bg-[var(--background)] px-4 py-12 sm:px-6 lg:px-8">
       <div className="w-full max-w-md">
@@ -49,12 +41,10 @@ export default function LoginPage() {
             <h1 className="text-2xl font-bold tracking-tight text-[var(--foreground)] sm:text-3xl">
               Welcome Back
             </h1>
-
             <p className="mt-2 text-sm leading-6 text-[var(--color-muted)]">
               Sign in to your account to continue.
             </p>
           </div>
-
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label
@@ -63,7 +53,6 @@ export default function LoginPage() {
               >
                 Email Address
               </label>
-
               <input
                 id="email"
                 name="email"
@@ -76,7 +65,6 @@ export default function LoginPage() {
                 className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition-colors duration-300 placeholder:text-[var(--color-muted)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary-light)] disabled:cursor-not-allowed disabled:opacity-60"
               />
             </div>
-
             <div>
               <div className="mb-2 flex items-center justify-between gap-3">
                 <label
@@ -86,7 +74,6 @@ export default function LoginPage() {
                   Password
                 </label>
               </div>
-
               <input
                 id="password"
                 name="password"
@@ -99,7 +86,6 @@ export default function LoginPage() {
                 className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition-colors duration-300 placeholder:text-[var(--color-muted)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary-light)] disabled:cursor-not-allowed disabled:opacity-60"
               />
             </div>
-
             <button
               type="submit"
               disabled={isLoading}
@@ -108,7 +94,6 @@ export default function LoginPage() {
               {isLoading ? "Logging in..." : "Login"}
             </button>
           </form>
-
           <p className="mt-6 text-center text-sm text-[var(--color-muted)]">
             Don't have an account?{" "}
             <Link
