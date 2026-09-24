@@ -13,16 +13,15 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false);
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setIsLoading((main) => true);
     setIsLoading(true);
     try {
       const response = await loginUser(email, password);
       showAppToast("success", response.message);
-      // Pehle foran dashboard par redirect karein
+      // Pehle user context ko successfully refresh hone dein (blocking)
+      await refreshUser();
+      // Jab user data set ho jaye, tab dashboard par redirect karein
       router.push("/dashboard");
       router.refresh();
-      // Background mein user context refresh hota rahega
-      refreshUser().catch(() => {});
     } catch (error) {
       const message =
         error instanceof Error
