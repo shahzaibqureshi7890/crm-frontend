@@ -21,5 +21,13 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
     dangerouslyAllowLocalIP: process.env.NODE_ENV !== "production",
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "https://crm-backend-roan.vercel.app/api/:path*",
+      },
+    ];
+  },
 };
 export default nextConfig;

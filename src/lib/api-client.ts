@@ -1,5 +1,14 @@
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
-const API_BASE_URL = BASE_URL.endsWith("/api") ? BASE_URL : `${BASE_URL}/api`;
+const isProduction = process.env.NODE_ENV === "production";
+// Agar production mein hain toh relative path ("/api") use hoga jo Next.js rewrites ke zariye proxy karega.
+// Local development mein localhost use hoga.
+const BASE_URL = isProduction
+  ? ""
+  : process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_BASE_URL = isProduction
+  ? "/api"
+  : BASE_URL.endsWith("/api")
+    ? BASE_URL
+    : `${BASE_URL}/api`;
 type ApiErrorResponse = {
   success?: boolean;
   message?: string;
