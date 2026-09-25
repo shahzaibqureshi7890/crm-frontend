@@ -1,29 +1,23 @@
 "use client";
-
 import Image from "next/image";
 import { useEffect, useState } from "react";
-
 import AppModal from "@/components/ui/app-modal";
 import TruckForm from "@/components/dashboard/trucks/TruckForm";
 import TruckStats from "@/components/dashboard/trucks/TruckStats";
 import TruckTable from "@/components/dashboard/trucks/TruckTable";
 import { useTrucks } from "@/hooks/use-trucks";
 import PageHeader from "@/components/dashboard/PageHeader";
-
 import {
   getTruckFeaturedImageUrl,
   getTruckGalleryImageUrl,
 } from "@/lib/image-url";
-
 import type {
   CreateTruckData,
   TruckGalleryImage,
   TruckWithGallery,
   UpdateTruckData,
 } from "@/types/truck.types";
-
 type FormMode = "create" | "edit";
-
 export default function TrucksPage() {
   const {
     trucks,
@@ -35,46 +29,37 @@ export default function TrucksPage() {
     deleteTruck,
     deleteGalleryImage,
   } = useTrucks();
-
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [formMode, setFormMode] = useState<FormMode>("create");
   const [selectedTruck, setSelectedTruck] = useState<TruckWithGallery | null>(
     null,
   );
-
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [truckToDelete, setTruckToDelete] = useState<TruckWithGallery | null>(
     null,
   );
-
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [truckToView, setTruckToView] = useState<TruckWithGallery | null>(null);
-
   useEffect(() => {
     fetchTrucks();
   }, [fetchTrucks]);
-
   const handleOpenCreate = () => {
     setFormMode("create");
     setSelectedTruck(null);
     setIsFormOpen(true);
   };
-
   const handleOpenEdit = (truck: TruckWithGallery) => {
     setFormMode("edit");
     setSelectedTruck(truck);
     setIsFormOpen(true);
   };
-
   const handleCloseForm = () => {
     if (isSubmitting) {
       return;
     }
-
     setIsFormOpen(false);
     setSelectedTruck(null);
   };
-
   const handleTruckSubmit = async (
     data: CreateTruckData | UpdateTruckData,
     featuredImage?: File,
@@ -90,60 +75,46 @@ export default function TrucksPage() {
         galleryImages,
       );
     }
-
     setIsFormOpen(false);
     setSelectedTruck(null);
   };
-
   const handleDeleteGalleryImage = async (image: TruckGalleryImage) => {
     if (!selectedTruck) {
       return;
     }
-
     const updatedTruck = await deleteGalleryImage(selectedTruck.id, image.id);
-
     setSelectedTruck(updatedTruck);
-
     if (truckToView?.id === updatedTruck.id) {
       setTruckToView(updatedTruck);
     }
   };
-
   const handleView = (truck: TruckWithGallery) => {
     setTruckToView(truck);
     setIsViewModalOpen(true);
   };
-
   const handleCloseView = () => {
     setIsViewModalOpen(false);
     setTruckToView(null);
   };
-
   const handleOpenDelete = (truck: TruckWithGallery) => {
     setTruckToDelete(truck);
     setIsDeleteModalOpen(true);
   };
-
   const handleCloseDelete = () => {
     if (isSubmitting) {
       return;
     }
-
     setIsDeleteModalOpen(false);
     setTruckToDelete(null);
   };
-
   const handleConfirmDelete = async () => {
     if (!truckToDelete) {
       return;
     }
-
     await deleteTruck(truckToDelete.id);
-
     setIsDeleteModalOpen(false);
     setTruckToDelete(null);
   };
-
   return (
     <div className="min-h-screen bg-[var(--background)]">
       <PageHeader />
@@ -154,12 +125,10 @@ export default function TrucksPage() {
               <h1 className="text-2xl font-bold tracking-tight text-[var(--foreground)]">
                 Trucks
               </h1>
-
               <p className="mt-1 text-sm text-[var(--color-muted)]">
                 Manage your fleet trucks and their images.
               </p>
             </div>
-
             <button
               type="button"
               onClick={handleOpenCreate}
@@ -180,6 +149,7 @@ export default function TrucksPage() {
           </div>
         </div>
       </div>
+      {/* Form Modal */}
       <AppModal
         isOpen={isFormOpen}
         onClose={handleCloseForm}
@@ -197,7 +167,7 @@ export default function TrucksPage() {
           onDeleteGalleryImage={handleDeleteGalleryImage}
         />
       </AppModal>
-
+      {/* View Modal */}
       <AppModal
         isOpen={isViewModalOpen}
         onClose={handleCloseView}
@@ -210,51 +180,43 @@ export default function TrucksPage() {
               <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-muted)]">
                 Truck Name
               </p>
-
               <p className="mt-1 text-lg font-semibold text-[var(--foreground)]">
                 {truckToView.name}
               </p>
             </div>
-
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-soft)] p-4">
                 <p className="text-xs font-medium text-[var(--color-muted)]">
                   Truck ID
                 </p>
-
                 <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">
                   #{truckToView.id}
                 </p>
               </div>
-
               <div className="rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-soft)] p-4">
                 <p className="text-xs font-medium text-[var(--color-muted)]">
                   Year
                 </p>
-
                 <p className="mt-1 text-sm font-semibold text-[var(--foreground)]">
                   {truckToView.year}
                 </p>
               </div>
             </div>
-
             <div>
               <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-muted)]">
                 Featured Image
               </p>
-
               {truckToView.featuredImage ? (
-                <div className="relative mt-3 overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-soft)]">
+                <div className="relative mt-3 h-64 w-full overflow-hidden rounded-xl border border-[var(--color-border)] bg-[var(--color-surface-soft)]">
                   <Image
                     src={getTruckFeaturedImageUrl(
                       truckToView.id,
                       truckToView.featuredImage,
                     )}
                     alt={`${truckToView.name} featured image`}
-                    width={800}
-                    height={450}
+                    fill
                     sizes="(max-width: 640px) 100vw, 800px"
-                    className="h-64 w-full object-cover"
+                    className="object-cover"
                   />
                 </div>
               ) : (
@@ -263,12 +225,10 @@ export default function TrucksPage() {
                 </p>
               )}
             </div>
-
             <div>
               <p className="text-xs font-medium uppercase tracking-wider text-[var(--color-muted)]">
                 Gallery Images
               </p>
-
               {truckToView.gallery.length === 0 ? (
                 <p className="mt-3 text-sm text-[var(--color-muted)]">
                   No gallery images available.
@@ -278,22 +238,23 @@ export default function TrucksPage() {
                   {truckToView.gallery.map((image) => (
                     <div
                       key={image.id}
-                      className="overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-soft)]"
+                      className="relative h-32 w-full overflow-hidden rounded-lg border border-[var(--color-border)] bg-[var(--color-surface-soft)]"
                     >
-                      <img
+                      <Image
                         src={getTruckGalleryImageUrl(
                           truckToView.id,
                           image.imageName,
                         )}
                         alt={`${truckToView.name} gallery image`}
-                        className="h-32 w-full object-cover"
+                        fill
+                        sizes="(max-width: 640px) 50vw, 33vw"
+                        className="object-cover"
                       />
                     </div>
                   ))}
                 </div>
               )}
             </div>
-
             <div className="flex justify-end border-t border-[var(--color-border)] pt-4">
               <button
                 type="button"
@@ -306,7 +267,7 @@ export default function TrucksPage() {
           </div>
         )}
       </AppModal>
-
+      {/* Delete Confirmation Modal */}
       <AppModal
         isOpen={isDeleteModalOpen}
         onClose={handleCloseDelete}
@@ -323,7 +284,6 @@ export default function TrucksPage() {
             </span>
             ? This action cannot be undone.
           </p>
-
           <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
             <button
               type="button"
@@ -333,7 +293,6 @@ export default function TrucksPage() {
             >
               Cancel
             </button>
-
             <button
               type="button"
               onClick={handleConfirmDelete}

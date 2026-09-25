@@ -13,9 +13,11 @@ const nextConfig: NextConfig = {
         hostname: "**.onrender.com",
         pathname: "/uploads/**",
       },
+      // Cloudinary ke liye official aur secure pattern
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "res.cloudinary.com",
+        pathname: "/**",
       },
     ],
     dangerouslyAllowSVG: true,
@@ -29,7 +31,7 @@ const nextConfig: NextConfig = {
       },
       {
         source: "/uploads/:path*",
-        destination: "https://crm-backend-roan.vercel.app/uploads/:path*", // <-- Yeh line lazmi add karein taake images proxy ho saken
+        destination: "https://crm-backend-roan.vercel.app/uploads/:path*",
       },
     ];
   },

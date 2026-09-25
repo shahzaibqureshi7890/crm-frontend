@@ -13,7 +13,6 @@ interface TruckTableProps {
   onEdit: (truck: TruckWithGallery) => void;
   onDelete: (truck: TruckWithGallery) => void;
 }
-
 export default function TruckTable({
   trucks,
   isLoading = false,
