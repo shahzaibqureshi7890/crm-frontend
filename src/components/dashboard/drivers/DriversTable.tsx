@@ -70,33 +70,42 @@ export default function DriversTable({
         `${driver.name} ${driver.email ?? ""} ${driver.phone}`,
       exportable: true,
       exportValue: (driver) => driver.name,
-      render: (driver) => (
-        <div className="flex items-center gap-3">
-          <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--color-border)] bg-[var(--color-primary-light)]">
-            {driver.profileImage ? (
-              <Image
-                src={getDriverProfileImageUrl(driver.id, driver.profileImage)}
-                alt={driver.name}
-                fill
-                sizes="44px"
-                className="object-cover"
-              />
-            ) : (
-              <span className="text-sm font-semibold text-[var(--color-primary)]">
-                {driver.name.charAt(0).toUpperCase()}
-              </span>
-            )}
+      render: (driver) => {
+        const imageUrl = driver.profileImage
+          ? getDriverProfileImageUrl(driver.id, driver.profileImage)
+          : null;
+        return (
+          <div className="flex items-center gap-3">
+            <div className="relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[var(--color-border)] bg-[var(--color-primary-light)]">
+              {imageUrl ? (
+                <Image
+                  src={imageUrl}
+                  alt={driver.name}
+                  fill
+                  sizes="44px"
+                  className="object-cover"
+                  unoptimized={
+                    imageUrl.startsWith("http://") ||
+                    imageUrl.startsWith("https://")
+                  }
+                />
+              ) : (
+                <span className="text-sm font-semibold text-[var(--color-primary)]">
+                  {driver.name.charAt(0).toUpperCase()}
+                </span>
+              )}
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-[var(--foreground)]">
+                {driver.name}
+              </p>
+              <p className="mt-0.5 truncate text-[10px] text-[var(--color-muted)]">
+                {driver.email || "No email provided"}
+              </p>
+            </div>
           </div>
-          <div className="min-w-0">
-            <p className="truncate text-sm font-semibold text-[var(--foreground)]">
-              {driver.name}
-            </p>
-            <p className="mt-0.5 truncate text-[10px] text-[var(--color-muted)]">
-              {driver.email || "No email provided"}
-            </p>
-          </div>
-        </div>
-      ),
+        );
+      },
     },
     {
       key: "contact",

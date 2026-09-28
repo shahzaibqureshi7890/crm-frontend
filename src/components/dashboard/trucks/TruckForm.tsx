@@ -11,7 +11,6 @@ import { getTruckGalleryImageUrl } from "@/lib/image-url";
 import Image from "next/image";
 import { getTruckFeaturedImageUrl } from "@/lib/image-url";
 import { showAppToast } from "@/components/ui/app-toast";
-
 interface TruckFormProps {
   mode: "create" | "edit";
   truck?: TruckWithGallery | null;
@@ -24,7 +23,6 @@ interface TruckFormProps {
   onCancel: () => void;
   onDeleteGalleryImage?: (image: TruckGalleryImage) => Promise<void>;
 }
-
 export default function TruckForm({
   mode,
   truck = null,
@@ -126,27 +124,22 @@ export default function TruckForm({
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const parsedYear = Number(year);
-
     if (!name.trim()) {
       showAppToast("error", "Truck Name Is required.");
       return;
     }
-
     if (!year) {
       showAppToast("error", "Truck Year Is required.");
       return;
     }
-
     if (!Number.isInteger(parsedYear)) {
       showAppToast("error", "Truck Year Must Be a Valid Number.");
       return;
     }
-
     if (parsedYear < 1900 || parsedYear > 2100) {
       showAppToast("error", "Truck Year Must Be Between 1900 and 2100.");
       return;
     }
-
     const data =
       mode === "create"
         ? {

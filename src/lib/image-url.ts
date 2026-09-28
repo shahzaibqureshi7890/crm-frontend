@@ -23,6 +23,10 @@ export const getTruckFeaturedImageUrl = (
   if (!imageName) {
     return "";
   }
+  // Agar database mein pehle se Cloudinary ka full URL save hai toh direct return karein
+  if (imageName.startsWith("http://") || imageName.startsWith("https://")) {
+    return imageName;
+  }
   return getImageUrl(`uploads/trucks/${truckId}/featured/${imageName}`);
 };
 export const getTruckGalleryImageUrl = (
@@ -32,6 +36,9 @@ export const getTruckGalleryImageUrl = (
   if (!imageName) {
     return "";
   }
+  if (imageName.startsWith("http://") || imageName.startsWith("https://")) {
+    return imageName;
+  }
   return getImageUrl(`uploads/trucks/${truckId}/gallery/${imageName}`);
 };
 export const getDriverProfileImageUrl = (
@@ -40,6 +47,9 @@ export const getDriverProfileImageUrl = (
 ): string => {
   if (!imageName) {
     return "";
+  }
+  if (imageName.startsWith("http://") || imageName.startsWith("https://")) {
+    return imageName;
   }
   return getImageUrl(`uploads/drivers/${driverId}/profile/${imageName}`);
 };

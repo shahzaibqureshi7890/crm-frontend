@@ -110,6 +110,8 @@ export const useDrivers = (): UseDriversResult => {
             driver.id === driverId ? response.driver : driver,
           ),
         );
+        // Added refresh call so dashboard counts stay completely synchronized on updates
+        await refreshDashboardCounts();
         showAppToast("success", response.message);
         return response.driver;
       } catch (error) {

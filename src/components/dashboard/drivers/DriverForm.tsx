@@ -1,43 +1,33 @@
 "use client";
-
 import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { ImagePlus, X } from "lucide-react";
-
 import type {
   CreateDriverData,
   Driver,
   DriverStatus,
   UpdateDriverData,
 } from "@/types/driver.types";
-
 import type { TruckWithGallery } from "@/types/truck.types";
-
 import { getImageUrl } from "@/lib/image-url";
-
 import { showAppToast } from "@/components/ui/app-toast";
-
 const formatDateForInput = (date: string | null): string => {
   if (!date) {
     return "";
   }
   return date.split("T")[0];
 };
-
 interface DriverFormProps {
   mode: "create" | "edit";
   driver?: Driver | null;
   trucks: TruckWithGallery[];
   isSubmitting: boolean;
-
   onSubmit: (
     data: CreateDriverData | UpdateDriverData,
     profileImage?: File,
   ) => Promise<void>;
-
   onCancel: () => void;
 }
-
 export default function DriverForm({
   mode,
   driver = null,
@@ -53,19 +43,14 @@ export default function DriverForm({
   const [licenseNumber, setLicenseNumber] = useState("");
   const [licenseExpiry, setLicenseExpiry] = useState("");
   const [status, setStatus] = useState<DriverStatus>("active");
-
   const [profileImage, setProfileImage] = useState<File | undefined>();
-
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(
     null,
   );
-
   const profileImageInputRef = useRef<HTMLInputElement>(null);
-
   useEffect(() => {
     if (mode === "edit" && driver) {
       setTruckId(driver.truckId === null ? "" : String(driver.truckId));
-
       setName(driver.name);
       setEmail(driver.email ?? "");
       setPhone(driver.phone);
@@ -81,68 +66,51 @@ export default function DriverForm({
       setLicenseExpiry("");
       setStatus("active");
     }
-
     setProfileImage(undefined);
     setProfileImagePreview(null);
-
     if (profileImageInputRef.current) {
       profileImageInputRef.current.value = "";
     }
   }, [mode, driver]);
-
   useEffect(() => {
     if (!profileImage) {
       setProfileImagePreview(null);
       return;
     }
-
     const previewUrl = URL.createObjectURL(profileImage);
-
     setProfileImagePreview(previewUrl);
-
     return () => {
       URL.revokeObjectURL(previewUrl);
     };
   }, [profileImage]);
-
   const handleProfileImageChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
-
     if (!file) {
       return;
     }
-
     setProfileImage(file);
   };
-
   const removeProfileImage = () => {
     setProfileImage(undefined);
-
     if (profileImageInputRef.current) {
       profileImageInputRef.current.value = "";
     }
   };
-
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
     if (!name.trim()) {
       showAppToast("error", "Driver name is required.");
       return;
     }
-
     if (!phone.trim()) {
       showAppToast("error", "Phone number is required.");
       return;
     }
-
     if (!licenseNumber.trim()) {
       showAppToast("error", "License number is required.");
       return;
     }
-
     const parsedTruckId = truckId === "" ? null : Number(truckId);
-
     if (
       parsedTruckId !== null &&
       (!Number.isInteger(parsedTruckId) || parsedTruckId <= 0)
@@ -150,7 +118,6 @@ export default function DriverForm({
       showAppToast("error", "Please select a valid truck.");
       return;
     }
-
     const data: CreateDriverData | UpdateDriverData = {
       truckId: parsedTruckId,
       name: name.trim(),
@@ -161,14 +128,11 @@ export default function DriverForm({
       status,
       profileImage: mode === "edit" ? (driver?.profileImage ?? null) : null,
     };
-
     await onSubmit(data, profileImage);
   };
-
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Profile Image */}
-
       <div>
         <div className="mb-2 flex items-center justify-between gap-3">
           <label
@@ -177,14 +141,12 @@ export default function DriverForm({
           >
             Profile Image
           </label>
-
           {mode === "edit" && driver?.profileImage && !profileImage && (
             <span className="text-[10px] text-[var(--color-muted)]">
               Existing Profile Image
             </span>
           )}
         </div>
-
         <input
           ref={profileImageInputRef}
           id="driver-profile-image"
@@ -195,7 +157,6 @@ export default function DriverForm({
           disabled={isSubmitting}
           className="sr-only"
         />
-
         {profileImagePreview ? (
           <div className="relative mx-auto h-40 w-40 overflow-hidden rounded-full border border-[var(--color-border)]">
             <img
@@ -203,7 +164,6 @@ export default function DriverForm({
               alt="New driver profile preview"
               className="h-full w-full object-cover"
             />
-
             <button
               type="button"
               onClick={removeProfileImage}
@@ -226,7 +186,6 @@ export default function DriverForm({
               sizes="160px"
               className="h-full w-full object-cover"
             />
-
             <button
               type="button"
               onClick={() => profileImageInputRef.current?.click()}
@@ -248,9 +207,7 @@ export default function DriverForm({
           </button>
         )}
       </div>
-
       {/* Driver Name */}
-
       <div>
         <label
           htmlFor="driver-name"
@@ -258,7 +215,6 @@ export default function DriverForm({
         >
           Driver Name
         </label>
-
         <input
           id="driver-name"
           name="name"
@@ -270,9 +226,7 @@ export default function DriverForm({
           className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition-colors duration-300 placeholder:text-[var(--color-muted)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary-light)] disabled:cursor-not-allowed disabled:opacity-60"
         />
       </div>
-
       {/* Email */}
-
       <div>
         <label
           htmlFor="driver-email"
@@ -280,7 +234,6 @@ export default function DriverForm({
         >
           Email
         </label>
-
         <input
           id="driver-email"
           name="email"
@@ -292,9 +245,7 @@ export default function DriverForm({
           className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition-colors duration-300 placeholder:text-[var(--color-muted)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary-light)] disabled:cursor-not-allowed disabled:opacity-60"
         />
       </div>
-
       {/* Phone */}
-
       <div>
         <label
           htmlFor="driver-phone"
@@ -302,7 +253,6 @@ export default function DriverForm({
         >
           Phone
         </label>
-
         <input
           id="driver-phone"
           name="phone"
@@ -314,9 +264,7 @@ export default function DriverForm({
           className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition-colors duration-300 placeholder:text-[var(--color-muted)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary-light)] disabled:cursor-not-allowed disabled:opacity-60"
         />
       </div>
-
       {/* Assigned Truck */}
-
       <div>
         <label
           htmlFor="driver-truck"
@@ -324,7 +272,6 @@ export default function DriverForm({
         >
           Assigned Truck
         </label>
-
         <select
           id="driver-truck"
           name="truckId"
@@ -334,7 +281,6 @@ export default function DriverForm({
           className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition-colors duration-300 focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary-light)] disabled:cursor-not-allowed disabled:opacity-60"
         >
           <option value="">No truck assigned</option>
-
           {trucks.map((truck) => (
             <option key={truck.id} value={truck.id}>
               {truck.name} ({truck.year})
@@ -342,9 +288,7 @@ export default function DriverForm({
           ))}
         </select>
       </div>
-
       {/* License Number */}
-
       <div>
         <label
           htmlFor="driver-license-number"
@@ -352,7 +296,6 @@ export default function DriverForm({
         >
           License Number
         </label>
-
         <input
           id="driver-license-number"
           name="licenseNumber"
@@ -364,9 +307,7 @@ export default function DriverForm({
           className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition-colors duration-300 placeholder:text-[var(--color-muted)] focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary-light)] disabled:cursor-not-allowed disabled:opacity-60"
         />
       </div>
-
       {/* License Expiry */}
-
       <div>
         <label
           htmlFor="driver-license-expiry"
@@ -374,7 +315,6 @@ export default function DriverForm({
         >
           License Expiry
         </label>
-
         <input
           id="driver-license-expiry"
           name="licenseExpiry"
@@ -385,9 +325,7 @@ export default function DriverForm({
           className="w-full rounded-lg border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-sm text-[var(--foreground)] outline-none transition-colors duration-300 focus:border-[var(--color-primary)] focus:ring-2 focus:ring-[var(--color-primary-light)] disabled:cursor-not-allowed disabled:opacity-60"
         />
       </div>
-
       {/* Status */}
-
       <div>
         <label
           htmlFor="driver-status"
@@ -395,7 +333,6 @@ export default function DriverForm({
         >
           Status
         </label>
-
         <select
           id="driver-status"
           name="status"
@@ -409,9 +346,7 @@ export default function DriverForm({
           <option value="on_leave">On Leave</option>
         </select>
       </div>
-
       {/* Actions */}
-
       <div className="flex flex-col-reverse gap-2 border-t border-[var(--color-border)] pt-5 sm:flex-row sm:justify-end">
         <button
           type="button"
@@ -421,7 +356,6 @@ export default function DriverForm({
         >
           Cancel
         </button>
-
         <button
           type="submit"
           disabled={isSubmitting}

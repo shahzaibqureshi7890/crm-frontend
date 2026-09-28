@@ -1,19 +1,14 @@
 "use client";
-
 import type { TruckWithGallery } from "@/types/truck.types";
-
 interface TruckStatsProps {
   trucks: TruckWithGallery[];
 }
-
 export default function TruckStats({ trucks }: TruckStatsProps) {
   const totalTrucks = trucks.length;
-
   const totalGalleryImages = trucks.reduce(
     (total, truck) => total + truck.gallery.length,
     0,
   );
-
   const stats = [
     {
       label: "Total Trucks",
@@ -28,7 +23,6 @@ export default function TruckStats({ trucks }: TruckStatsProps) {
       value: totalGalleryImages,
     },
   ];
-
   return (
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
       {stats.map((stat) => (
@@ -39,7 +33,6 @@ export default function TruckStats({ trucks }: TruckStatsProps) {
           <p className="text-xs font-medium text-[var(--color-muted)]">
             {stat.label}
           </p>
-
           <p className="mt-2 text-2xl font-bold tracking-tight text-[var(--foreground)]">
             {stat.value}
           </p>
